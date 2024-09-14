@@ -37,9 +37,8 @@ python3
 ```
 **Run commands in interpreter and copy the secret key:**
 ```python
->>> import secrets
->>> secrets.token_hex(16)
-'18fd24bf6a2ad4dac04a33963db1c42f'
+import secrets
+secrets.token_hex(16)
 ```
 
 **Example secret key:**
