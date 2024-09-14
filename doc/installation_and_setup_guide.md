@@ -31,21 +31,24 @@ touch .env
 ```
 
 ### Add the two lines to the .env file
-DATABASE_URL=postgresql:///user
-
+```python
 SECRET_KEY="THE SECRET KEY YOU CREATED"
+```
 
 ### Create your own secret key using Python interpreter:
+**Run command:**
 ```bash
 python3
 ```
+**Run commands in interpreter and copy the secret key:**
 ```python
 >>> import secrets
 >>> secrets.token_hex(16)
 '18fd24bf6a2ad4dac04a33963db1c42f'
 ```
 
-**Example secret key**
+**Example secret key:**
+
 SECRET_KEY=18fd24bf6a2ad4dac04a33963db1c42f
 
 ### Run program:
