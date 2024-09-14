@@ -39,11 +39,11 @@ SECRET_KEY="THE SECRET KEY YOU CREATED"
 ```bash
 python3
 ```
+```python
 >>> import secrets
-
 >>> secrets.token_hex(16)
-
 '18fd24bf6a2ad4dac04a33963db1c42f'
+```
 
 **Example secret key**
 SECRET_KEY=18fd24bf6a2ad4dac04a33963db1c42f
