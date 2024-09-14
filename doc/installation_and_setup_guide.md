@@ -30,11 +30,6 @@ pip install -r requirements.txt
 touch .env
 ```
 
-### Add the two lines to the .env file
-```python
-SECRET_KEY="THE SECRET KEY YOU CREATED"
-```
-
 ### Create your own secret key using Python interpreter:
 **Run command:**
 ```bash
@@ -48,8 +43,15 @@ python3
 ```
 
 **Example secret key:**
-
+```python
 SECRET_KEY=18fd24bf6a2ad4dac04a33963db1c42f
+```
+
+### Add the two lines to the .env file
+```python
+DATABASE_URL=postgresql:///user
+SECRET_KEY="THE SECRET KEY YOU CREATED"
+```
 
 ### Run program:
 ```bash
