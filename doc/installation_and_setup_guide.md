@@ -7,7 +7,7 @@ git clone git@github.com:opturtio/ElevateR.git
 
 ### Go to repository:
 ```bash
-cd Elevater
+cd ElevateR
 ```
 
 ### Install virtual environment:
