@@ -10,7 +10,7 @@ git clone git@github.com:opturtio/ElevateR.git
 cd Elevater
 ```
 
-### Run:
+### Install virtual environment:
 ```bash
 python3 -m venv venv
 ```
@@ -32,6 +32,7 @@ touch .env
 
 ### Add the two lines to the .env file
 DATABASE_URL=postgresql:///user
+
 SECRET_KEY="THE SECRET KEY YOU CREATED"
 
 ### Create your own secret key using Python interpreter:
@@ -39,7 +40,9 @@ SECRET_KEY="THE SECRET KEY YOU CREATED"
 python3
 ```
 >>> import secrets
+
 >>> secrets.token_hex(16)
+
 '18fd24bf6a2ad4dac04a33963db1c42f'
 
 **Example secret key**
