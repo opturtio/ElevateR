@@ -1,5 +1,7 @@
 # Installation and Setup Guide
 
+**You need to have PostgreSQL installed!**
+
 ### Clone the project:
 ```bash
 git clone git@github.com:opturtio/ElevateR.git
