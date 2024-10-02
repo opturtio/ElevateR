@@ -22,7 +22,7 @@ source venv/bin/activate
 
 ### Install requirements:
 ```bash
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 ```
 
 ### Create .env-file:
