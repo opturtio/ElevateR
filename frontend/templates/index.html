@@ -5,17 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HSL Travel Time Heatmap</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
     <style>
         html, body {
-            height: 100%;         /* Ensure the body and html are 100% of the window height */
-            margin: 0;            /* Remove any default margin */
-            padding: 0;           /* Remove any default padding */
+            height: 100%;
+            margin: 0;
+            padding: 0;
         }
 
         #map {
-            height: 100%;         /* Make the map fill the remaining space */
-            width: 100%;          /* Ensure the map takes the full width of the window */
+            height: 90%;
+            width: 100%;
         }
     </style>
 </head>
@@ -32,15 +35,24 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Parse stations data from Flask template and make sure it's correctly serialized to JSON
+        // Create a marker cluster group with custom options to show more stations
+        const markers = L.markerClusterGroup({
+            maxClusterRadius: 40,  // Decrease the clustering radius to show more individual markers
+            disableClusteringAtZoom: 14  // Disable clustering beyond zoom level 14 (adjust as needed)
+        });
+
+        // Parse stations data passed from Flask template and make sure it's correctly serialized to JSON
         const stations = JSON.parse('{{ stations | tojson | safe }}');
 
-        // Add markers for each station on the map
+        // Add markers to the cluster group
         stations.forEach(station => {
-            L.marker([station.lat, station.lon])
-                .addTo(map)
+            const marker = L.marker([station.lat, station.lon])
                 .bindPopup(`${station.name} (${station.vehicleType})`);
+            markers.addLayer(marker);
         });
+
+        // Add the cluster group to the map
+        map.addLayer(markers);
     </script>
 </body>
 </html>
