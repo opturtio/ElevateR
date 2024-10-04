@@ -7,16 +7,21 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <style>
+        html, body {
+            height: 100%;         /* Ensure the body and html are 100% of the window height */
+            margin: 0;            /* Remove any default margin */
+            padding: 0;           /* Remove any default padding */
+        }
+
         #map {
-            height: 500px;
-            width: 100%;
-            margin: 20px auto;
+            height: 100%;         /* Make the map fill the remaining space */
+            width: 100%;          /* Ensure the map takes the full width of the window */
         }
     </style>
 </head>
 <body>
     <h1>ElevatoR</h1>
-    <h1>Public Transport Travel Time Elevation Map</h1> <!-- Corrected spelling -->
+    <h3>Elevation Map for Public Transport Travel Time</h3> <!-- Corrected spelling -->
     <div id="map"></div>
 
     <script>
