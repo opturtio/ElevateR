@@ -36,12 +36,18 @@
         }).addTo(map);
 
         const markers = L.markerClusterGroup({
-            maxClusterRadius: 40,  // Decrease the clustering radius to show more individual markers
-            disableClusteringAtZoom: 14  // Disable clustering beyond zoom level 14 (adjust as needed)
+            maxClusterRadius: 40,  // Adjust the clustering radius
+            spiderfyOnMaxZoom: false,  // Prevent spiderfying clusters when zoomed in
+            removeOutsideVisibleBounds: true,  // Optimize performance by removing markers outside view
+            animate: false  // Disable animations for smoother clustering
         });
 
         const stations = JSON.parse('{{ stations | tojson | safe }}');
         const vehicleTypes = JSON.parse('{{ vehicle_types | tojson | safe }}');
+
+        // Store bus and tram markers separately for easy adding/removing
+        const busTramMarkers = [];
+        const nonBusTramMarkers = [];
 
         // Function to get the color for each vehicle type using AwesomeMarkers' valid colors
         function getMarkerColor(vehicleType) {
@@ -72,14 +78,51 @@
 
             const marker = L.marker([station.lat, station.lon], { icon: coloredMarker })
                 .bindPopup(`${station.name} (${vehicleTypes[station.vehicleType]})`);
-            if (station.vehicleType === 0 || station.vehicleType === 3 ) {
-                markers.addLayer(marker);
+
+            if (station.vehicleType === 0 || station.vehicleType === 3) {
+                busTramMarkers.push(marker);  // Store bus and tram markers separately
             } else {
-                marker.addTo(map);
+                nonBusTramMarkers.push(marker);  // Store non-bus/tram markers
+                marker.addTo(map);  // Add non-bus/tram markers to the map initially
             }
         });
 
+        // Add non-bus/tram markers to the map initially
+        nonBusTramMarkers.forEach(marker => marker.addTo(map));
+
+        // Add clustered markers (bus and tram stations) to the map initially
         map.addLayer(markers);
+
+        // Add event listener to handle zoom changes
+        map.on('zoomstart', function() {
+            const currentZoom = map.getZoom();
+            const zoomThreshold = 14;
+
+            if (currentZoom <= zoomThreshold) {
+                // Remove individual bus and tram markers from map right before zooming out
+                busTramMarkers.forEach(marker => marker.removeFrom(map));
+            }
+        });
+
+        map.on('zoomend', function() {
+            const currentZoom = map.getZoom();
+
+            // Define the zoom threshold for clustering bus/tram markers (zoom level 14)
+            const zoomThreshold = 14;
+
+            if (currentZoom <= zoomThreshold) {
+                // If zoomed out to level 14 or below, add bus and tram markers to cluster
+                busTramMarkers.forEach(marker => {
+                    markers.addLayer(marker); // Add to cluster
+                });
+            } else {
+                // If zoomed in beyond level 14, show bus and tram markers individually
+                busTramMarkers.forEach(marker => {
+                    markers.removeLayer(marker); // Remove from cluster
+                    marker.addTo(map); // Add back to map individually
+                });
+            }
+        });
 
         document.getElementById('elevateButton').addEventListener('click', function() {
             alert('Elevation calculation triggered!');
