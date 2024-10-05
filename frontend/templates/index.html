@@ -8,14 +8,17 @@
     <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/leaflet.awesome-markers.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}" />
     
     <!-- JavaScript Libraries -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="{{ url_for('static', filename='js/leaflet.awesome-markers.js') }}"></script>
 </head>
 <body>
-    <h1>ElevatoR</h1>
+    <h1>ElevateR</h1>
     <h3>Elevation Map for Public Transport Travel Time</h3>
 
     <!-- Button to trigger the elevation calculation -->
@@ -40,8 +43,34 @@
         const stations = JSON.parse('{{ stations | tojson | safe }}');
         const vehicleTypes = JSON.parse('{{ vehicle_types | tojson | safe }}');
 
+        // Function to get the color for each vehicle type using AwesomeMarkers' valid colors
+        function getMarkerColor(vehicleType) {
+            switch (vehicleType) {
+                case 0:
+                    return 'green';  // Tram
+                case 1:
+                    return 'orange'; // Metro
+                case 109:
+                    return 'red';    // Train
+                case 3:
+                    return 'blue';   // Bus
+                case 4:
+                    return 'purple'; // Ferry
+                default:
+                    return 'gray';   // Default color for unknown types
+            }
+        }
+
         stations.forEach(station => {
-            const marker = L.marker([station.lat, station.lon])
+            const markerColor = getMarkerColor(station.vehicleType);
+
+            const coloredMarker = L.AwesomeMarkers.icon({
+                icon: 'fa-train',
+                markerColor: markerColor,
+                prefix: 'fa'
+            });
+
+            const marker = L.marker([station.lat, station.lon], { icon: coloredMarker })
                 .bindPopup(`${station.name} (${vehicleTypes[station.vehicleType]})`);
             markers.addLayer(marker);
         });

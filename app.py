@@ -13,7 +13,7 @@ stations = fetch_helsinki_stations()
 vehicle_types = {
     0: 'Tram',
     1: 'Metro',
-    2: 'Train',
+    109: 'Train',
     3: 'Bus',
     4: 'Ferry',
     5: 'Cable Car',
@@ -22,7 +22,7 @@ vehicle_types = {
     12: 'City Bike'
 }
 
-from backend import routes
+from backend import routes  # noqa: E402, F401
 
 if __name__ == "__main__":
     app.run(debug=True)
