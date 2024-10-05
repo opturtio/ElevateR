@@ -12,7 +12,7 @@ def fetch_helsinki_stations():
     # GraphQL query to fetch stops within the bounding box of Helsinki
     query = """
     {
-      stopsByBbox(minLat: 60.1, minLon: 24.7, maxLat: 60.3, maxLon: 25.1) {
+      stopsByBbox(minLat: 60.1, minLon: 24.7, maxLat: 60.3, maxLon: 25.19) {
         gtfsId
         name
         lat

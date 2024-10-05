@@ -1,0 +1,23 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    height: 90%;
+    width: 100%;
+}
+
+/* Style the button */
+#elevateButton {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: rgb(222, 9, 9);
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}

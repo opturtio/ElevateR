@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSL Travel Time Heatmap</title>
+    <title>ElevateR</title>
+    
+    <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    
+    <!-- JavaScript Libraries -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-
     <style>
         html, body {
             height: 100%;
@@ -20,11 +23,38 @@
             height: 90%;
             width: 100%;
         }
+
+        #elevateButton {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateY(-50%); 
+            padding: 10px 20px;
+            margin: 20px;
+            background-color: #dfebf8;
+            color: rgb(22, 20, 20);
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+            border-radius: 95%;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Lato', sans-serif;
+        }
+
+        #elevateButton:hover {
+            background-color: rgb(161, 251, 161);
+        }
+
     </style>
 </head>
 <body>
     <h1>ElevatoR</h1>
     <h3>Elevation Map for Public Transport Travel Time</h3>
+
+    <!-- Button to trigger the elevation calculation -->
+    <button id="elevateButton">Elevate</button>
+
+    <!-- Map container -->
     <div id="map"></div>
 
     <script>
@@ -43,15 +73,17 @@
         const stations = JSON.parse('{{ stations | tojson | safe }}');
         const vehicleTypes = JSON.parse('{{ vehicle_types | tojson | safe }}');
 
-        // Add markers to the cluster group
         stations.forEach(station => {
             const marker = L.marker([station.lat, station.lon])
                 .bindPopup(`${station.name} (${vehicleTypes[station.vehicleType]})`);
             markers.addLayer(marker);
         });
 
-        // Add the cluster group to the map
         map.addLayer(markers);
+
+        document.getElementById('elevateButton').addEventListener('click', function() {
+            alert('Elevation calculation triggered!');
+        });
     </script>
 </body>
 </html>
