@@ -2,54 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- Viewport meta tag to ensure responsiveness on mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Descriptive title for the page -->
     <title>ElevateR</title>
     
-    <!-- CSS Stylesheets -->
+    <!-- External CSS files for Leaflet and other dependencies -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Including local custom stylesheets (relative paths using Jinja templating) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/leaflet.awesome-markers.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}" />
     
-    <!-- JavaScript Libraries -->
+    <!-- External JavaScript libraries: Leaflet.js for maps, and MarkerCluster plugin -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <script src="{{ url_for('static', filename='js/leaflet.awesome-markers.js') }}"></script>
 </head>
 <body>
-    <h1>ElevateR</h1>
+    <!-- Header elements for the map application -->
+    <h1>ElevatoR</h1>
     <h3>Elevation Map for Public Transport Travel Time</h3>
 
-    <!-- Button to trigger the elevation calculation -->
+    <!-- Button for triggering an elevation calculation (example functionality) -->
     <button id="elevateButton">Elevate</button>
 
-    <!-- Map container -->
+    <!-- Map container where Leaflet will render the map -->
     <div id="map"></div>
 
     <script>
-        // Initialize map centered on Helsinki
+        // Initialize the map with a view centered on Helsinki
         const map = L.map('map').setView([60.170677, 24.941514], 12);
 
+        // Add OpenStreetMap tiles to the map (basic map rendering)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
+        // Create a cluster group to handle marker clustering with specific options
         const markers = L.markerClusterGroup({
-            maxClusterRadius: 40,  // Adjust the clustering radius
-            spiderfyOnMaxZoom: false,  // Prevent spiderfying clusters when zoomed in
-            removeOutsideVisibleBounds: true,  // Optimize performance by removing markers outside view
-            animate: false  // Disable animations for smoother clustering
+            maxClusterRadius: 40,  // Defines how close markers need to be to cluster together
+            spiderfyOnMaxZoom: false,  // Prevent markers from spreading out when zoomed in
+            removeOutsideVisibleBounds: true,  // Improves performance by removing markers out of view
+            animate: false  // Disable animation for better performance
         });
 
+        // Fetching station data (assumed to be injected server-side using Jinja templating)
         const stations = JSON.parse('{{ stations | tojson | safe }}');
         const vehicleTypes = JSON.parse('{{ vehicle_types | tojson | safe }}');
 
-        // Store bus and tram markers separately for easy adding/removing
+        // Arrays to store markers for different types of vehicles
         const busTramMarkers = [];
         const nonBusTramMarkers = [];
 
-        // Function to get the color for each vehicle type using AwesomeMarkers' valid colors
+        // Function to return marker color based on the vehicle type
         function getMarkerColor(vehicleType) {
             switch (vehicleType) {
                 case 0:
@@ -63,67 +71,75 @@
                 case 4:
                     return 'purple'; // Ferry
                 default:
-                    return 'gray';   // Default color for unknown types
+                    return 'gray';   // Default color for unknown/other types
             }
         }
 
+        // Loop through all the stations and create markers accordingly
         stations.forEach(station => {
+            // Determine the color based on the station's vehicle type
             const markerColor = getMarkerColor(station.vehicleType);
 
+            // Create a colored marker using the AwesomeMarkers plugin
             const coloredMarker = L.AwesomeMarkers.icon({
                 icon: 'fa-train',
                 markerColor: markerColor,
                 prefix: 'fa'
             });
 
+            // Create the marker with the corresponding popup for station details
             const marker = L.marker([station.lat, station.lon], { icon: coloredMarker })
                 .bindPopup(`${station.name} (${vehicleTypes[station.vehicleType]})`);
 
+            // Separate bus and tram markers from other vehicle markers for specific behavior
             if (station.vehicleType === 0 || station.vehicleType === 3) {
-                busTramMarkers.push(marker);  // Store bus and tram markers separately
+                busTramMarkers.push(marker);
             } else {
-                nonBusTramMarkers.push(marker);  // Store non-bus/tram markers
-                marker.addTo(map);  // Add non-bus/tram markers to the map initially
+                nonBusTramMarkers.push(marker);
+                marker.addTo(map);
             }
         });
 
-        // Add non-bus/tram markers to the map initially
+        // Add all non-bus/tram markers to the map at the beginning
         nonBusTramMarkers.forEach(marker => marker.addTo(map));
 
-        // Add clustered markers (bus and tram stations) to the map initially
+        // Initially add all bus and tram markers to the cluster group
         map.addLayer(markers);
+        busTramMarkers.forEach(marker => {
+            markers.addLayer(marker);
+        });
 
-        // Add event listener to handle zoom changes
+        // Event listener for when the zoom starts
         map.on('zoomstart', function() {
             const currentZoom = map.getZoom();
             const zoomThreshold = 14;
 
             if (currentZoom <= zoomThreshold) {
-                // Remove individual bus and tram markers from map right before zooming out
+                // Remove individual bus and tram markers before zooming out (if zoomed out enough)
                 busTramMarkers.forEach(marker => marker.removeFrom(map));
             }
         });
 
+        // Event listener for when zooming ends
         map.on('zoomend', function() {
             const currentZoom = map.getZoom();
-
-            // Define the zoom threshold for clustering bus/tram markers (zoom level 14)
             const zoomThreshold = 14;
 
             if (currentZoom <= zoomThreshold) {
-                // If zoomed out to level 14 or below, add bus and tram markers to cluster
+                // If zoomed out enough (zoom level 14 or lower), add bus/tram markers to the cluster
                 busTramMarkers.forEach(marker => {
-                    markers.addLayer(marker); // Add to cluster
+                    markers.addLayer(marker); // Add bus/tram markers to the cluster
                 });
             } else {
-                // If zoomed in beyond level 14, show bus and tram markers individually
+                // If zoomed in beyond level 14, display bus/tram markers individually
                 busTramMarkers.forEach(marker => {
                     markers.removeLayer(marker); // Remove from cluster
-                    marker.addTo(map); // Add back to map individually
+                    marker.addTo(map);  // Add back to map individually
                 });
             }
         });
 
+        // Event listener for the Elevate button
         document.getElementById('elevateButton').addEventListener('click', function() {
             alert('Elevation calculation triggered!');
         });
