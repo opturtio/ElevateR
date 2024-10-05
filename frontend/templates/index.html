@@ -24,7 +24,7 @@
 </head>
 <body>
     <h1>ElevatoR</h1>
-    <h3>Elevation Map for Public Transport Travel Time</h3> <!-- Corrected spelling -->
+    <h3>Elevation Map for Public Transport Travel Time</h3>
     <div id="map"></div>
 
     <script>
@@ -35,19 +35,18 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Create a marker cluster group with custom options to show more stations
         const markers = L.markerClusterGroup({
             maxClusterRadius: 40,  // Decrease the clustering radius to show more individual markers
             disableClusteringAtZoom: 14  // Disable clustering beyond zoom level 14 (adjust as needed)
         });
 
-        // Parse stations data passed from Flask template and make sure it's correctly serialized to JSON
         const stations = JSON.parse('{{ stations | tojson | safe }}');
+        const vehicleTypes = JSON.parse('{{ vehicle_types | tojson | safe }}');
 
         // Add markers to the cluster group
         stations.forEach(station => {
             const marker = L.marker([station.lat, station.lon])
-                .bindPopup(`${station.name} (${station.vehicleType})`);
+                .bindPopup(`${station.name} (${vehicleTypes[station.vehicleType]})`);
             markers.addLayer(marker);
         });
 
