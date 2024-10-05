@@ -44,10 +44,19 @@
         // Create a cluster group to handle marker clustering with specific options
         const markers = L.markerClusterGroup({
             maxClusterRadius: 40,  // Defines how close markers need to be to cluster together
-            spiderfyOnMaxZoom: false,  // Prevent markers from spreading out when zoomed in
-            removeOutsideVisibleBounds: true,  // Improves performance by removing markers out of view
-            animate: false  // Disable animation for better performance
+            spiderfyOnMaxZoom: true,  // Allows clusters to expand (spiderfy) when clicked
+            zoomToBoundsOnClick: true,  // Prevents zooming in when clicking on clusters
+            showCoverageOnHover: true,  // Shows the cluster coverage area when hovering over clusters
+            animate: true,  // Enable animation for smoother clustering/unclustering
+            removeOutsideVisibleBounds: true,  // Removes markers that are outside the visible map bounds for performance optimization
+            disableClusteringAtZoom: 14,  // Disables clustering beyond zoom level 14, showing individual markers
+            spiderLegPolylineOptions: { 
+                weight: 0.5,  // Sets the thickness of the spider leg lines
+                color: '#222',  // Specifies a dark gray color for the spider leg lines
+                opacity: 0.3  // Sets the transparency of the spider leg lines
+            },
         });
+
 
         // Fetching station data (assumed to be injected server-side using Jinja templating)
         const stations = JSON.parse('{{ stations | tojson | safe }}');
