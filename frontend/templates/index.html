@@ -61,12 +61,23 @@
 
         // Fetching station data (assumed to be injected server-side using Jinja templating)
         const stations = JSON.parse('{{ stations | tojson | safe }}');
-        const vehicleTypes = JSON.parse('{{ vehicle_types | tojson | safe }}');
+        
+        const vehicleTypes = {
+            0: 'Tram',
+            1: 'Metro',
+            109: 'Train',
+            3: 'Bus',
+            4: 'Ferry',
+            5: 'Cable Car',
+            6: 'Gondola/Chair Lift',
+            7: 'Funicular',
+            12: 'City Bike'
+        }
 
         // Arrays to store markers for different types of vehicles
         const busTramMarkers = [];
         const nonBusTramMarkers = [];
-
+        
         // Function to return marker color based on the vehicle type
         function getMarkerColor(vehicleType) {
             switch (vehicleType) {

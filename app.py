@@ -10,18 +10,6 @@ CORS(app)
 # Fetch all the Helsinki stations when the app starts
 stations = fetch_helsinki_stations()
 
-vehicle_types = {
-    0: 'Tram',
-    1: 'Metro',
-    109: 'Train',
-    3: 'Bus',
-    4: 'Ferry',
-    5: 'Cable Car',
-    6: 'Gondola/Chair Lift',
-    7: 'Funicular',
-    12: 'City Bike'
-}
-
 from backend import routes  # noqa: E402, F401
 
 if __name__ == "__main__":
