@@ -47,7 +47,7 @@ def fetch_helsinki_stations():
 
     if response.status_code == 200:
         data = response.json()
-        valid_stations = [station for station in data['data']['stopsByBbox'] if station['vehicleType'] != -999]
+        valid_stations = [station for station in data['data']['stopsByBbox'] if station['vehicleType'] in [0, 1, 109, 3, 4]]
         return valid_stations
     else:
         raise Exception(f"Failed to fetch stations: {response.status_code}, {response.text}")

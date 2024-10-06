@@ -61,17 +61,13 @@
 
         // Fetching station data (assumed to be injected server-side using Jinja templating)
         const stations = JSON.parse('{{ stations | tojson | safe }}');
-        
+
         const vehicleTypes = {
             0: 'Tram',
             1: 'Metro',
             109: 'Train',
             3: 'Bus',
             4: 'Ferry',
-            5: 'Cable Car',
-            6: 'Gondola/Chair Lift',
-            7: 'Funicular',
-            12: 'City Bike'
         }
 
         // Arrays to store markers for different types of vehicles
@@ -108,10 +104,6 @@
                 109: 'fa-train',     // Train
                 3: 'fa-bus',         // Bus
                 4: 'fa-ship',        // Ferry
-                5: 'fa-road',        // Cable Car
-                6: 'fa-skiing',      // Gondola/Chair Lift
-                7: 'fa-train',       // Funicular
-                12: 'fa-bicycle'     // City Bike
             };
 
 
