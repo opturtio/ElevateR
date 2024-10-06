@@ -150,8 +150,23 @@
 
         // Event listener for the Elevate button
         document.getElementById('elevateButton').addEventListener('click', function() {
-            alert('Elevation calculation triggered!');
+            // Send a POST request to trigger the elevation process
+            fetch('/elevate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.status === 204) {
+                    alert('Elevation process triggered successfully!');
+                }
+            })
+            .catch(error => {
+                alert('Error during elevation process:', error);
+            });
         });
+
     </script>
 </body>
 </html>
