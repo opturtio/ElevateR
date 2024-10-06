@@ -23,7 +23,7 @@
 </head>
 <body>
     <!-- Header elements for the map application -->
-    <h1>ElevatoR</h1>
+    <h1>ElevateR</h1>
     <h3>Elevation Map for Public Transport Travel Time</h3>
 
     <!-- Button for triggering an elevation calculation (example functionality) -->
@@ -44,7 +44,7 @@
         // Create a cluster group to handle marker clustering with specific options
         const markers = L.markerClusterGroup({
             maxClusterRadius: 40,  // Defines how close markers need to be to cluster together
-            spiderfyOnMaxZoom: true,  // Allows clusters to expand (spiderfy) when clicked
+            spiderfyOnMaxZoom: false,  // Allows clusters to expand (spiderfy) when clicked
             zoomToBoundsOnClick: true,  // Prevents zooming in when clicking on clusters
             showCoverageOnHover: true,  // Shows the cluster coverage area when hovering over clusters
             animate: true,  // Enable animation for smoother clustering/unclustering
