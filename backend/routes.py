@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, Response
+from flask import render_template, jsonify
 from app import app, stations
 from backend.elevate import elevate
 
@@ -10,8 +10,7 @@ def index():
 @app.route('/elevate', methods=['POST'])
 def trigger_elevate():
     try:
-        # Call the elevate function directly (no subprocess needed)
-        elevate()
-        return Response(status=204)  # 204 No Content: Request processed, no content to return
+        nearest_stations = elevate()
+        return jsonify(nearest_stations), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500 
