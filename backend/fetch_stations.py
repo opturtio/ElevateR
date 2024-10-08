@@ -55,6 +55,6 @@ def fetch_helsinki_stations():
 # Fetch Helsinki stations and handle any potential exceptions
 try:
     helsinki_stations = fetch_helsinki_stations()
-    print(helsinki_stations)
+    print("Stations fetched")
 except Exception as e:
     print(e)
