@@ -72,7 +72,9 @@ def elevate():
             if travel_time is not None:
                 queries.append({
                     'station_name': station['name'],
-                    'travel_time': travel_time
+                    'travel_time': travel_time,
+                    'lat': station['lat'],
+                    'lon': station['lon']
                 })
                 print(f"Travel time to {station['name']}: {travel_time / 60:.2f} minutes")
             else:
