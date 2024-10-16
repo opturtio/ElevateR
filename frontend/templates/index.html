@@ -122,7 +122,6 @@
                     // Capture the selected station's lat/lon
                     selectedLat = station.lat;
                     selectedLon = station.lon;
-                    alert(`Station selected: ${station.name}`);
                 });
     
             // Separate bus and tram markers from other vehicle markers for specific behavior
@@ -173,7 +172,6 @@
             }
         });
     
-        // Event listener for the Elevate button
         document.getElementById('elevateButton').addEventListener('click', function() {
             if (selectedLat && selectedLon) {
                 // Send a POST request to trigger the elevation process with the selected station's lat/lon
@@ -196,32 +194,56 @@
                 })
                 .then(data => {
                     alert('Elevation process triggered successfully!');
-                    
+
+                    // Find the maximum travel time from the returned data to normalize intensity
+                    const maxTravelTime = Math.max(...data.map(station => station.travel_time));
+                    console.log("Max travel time:", maxTravelTime); // Debugging log to check max travel time
+
+                    // Find the minimum travel time for proper normalization (in case you want a spectrum from min to max)
+                    const minTravelTime = Math.min(...data.map(station => station.travel_time));
+                    console.log("Min travel time:", minTravelTime); // Debugging log to check min travel time
+
                     // Step 1: Prepare heatmap data using the station data returned from the backend
                     const heatmapData = data.map(station => {
-                        return [station.lat, station.lon, (station.travel_time)/1000]; // Default intensity value of 1
+                        // Normalize the travel time to a value between 0 and 1
+                        let travelTimeNormalized = (station.travel_time - minTravelTime) / (maxTravelTime - minTravelTime);
+                        
+                        // Ensure value is clamped between 0 and 1
+                        travelTimeNormalized = Math.min(Math.max(travelTimeNormalized, 0), 1);
+
+                        console.log(`Station ${station.station_name} - Normalized travel time:`, travelTimeNormalized); // Debugging log
+
+                        // Return the [lat, lon, intensity] for the heatmap
+                        return [station.lat, station.lon, travelTimeNormalized];
                     });
+
+                    // Debugging log to check the full heatmap data
+                    console.log("Heatmap Data:", heatmapData);
 
                     // Step 2: Create and add the heatmap layer to the map
                     const heatmapLayer = L.heatLayer(heatmapData, {
-                        radius: 25,           // Radius of each "point" of the heatmap
-                        blur: 15,             // Amount of blur for each point
-                        maxZoom: 12,          // Maximum zoom level where the heatmap will be fully visible
-                        max: 1.0,             // Maximum intensity value of the heatmap
-                        gradient: {           // Custom color gradient for the heatmap
-                            0.4: 'blue',
-                            0.65: 'green',
-                            1: 'red'
+                        radius: 50,          // Larger radius for better visibility of the heatmap
+                        blur: 40,            // Increased blur for smoother transitions
+                        opacity: 0.8,        // Overall opacity of the heatmap layer
+                        maxZoom: 12,         // Maximum zoom level for the heatmap to be visible
+                        gradient: {          // Custom color gradient based on travel time
+                            0.0: 'lightblue',    // Shortest travel time
+                            0.25: 'blue',
+                            0.5: 'orange', 
+                            0.75: 'red',     // Medium travel time
+                            1.0: 'darkred'   // Longest travel time
                         }
                     }).addTo(map);
                 })
                 .catch(error => {
-                    alert('Error during elevation process:', error);
+                    console.error('Error during elevation process:', error); // Log error details for debugging
+                    alert('Error during elevation process.');
                 });
             } else {
                 alert('Please select a station on the map.');
+                console.warn("No station selected on the map.");
             }
         });
-    </script>    
+    </script>
 </body>
 </html>
