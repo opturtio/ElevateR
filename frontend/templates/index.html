@@ -12,15 +12,18 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!-- Including local custom stylesheets (relative paths using Jinja templating) -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/leaflet.awesome-markers.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}" />
     
-    <!-- External JavaScript libraries: Leaflet.js for maps, and MarkerCluster plugin -->
+    <!-- External JS libraries: Leaflet.js for maps and MarkerCluster plugin -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <script src="{{ url_for('static', filename='js/leaflet.awesome-markers.js') }}"></script>
+
+    <!-- Custom HeatMap JS -->
+    <script src="{{ url_for('static', filename='js/simpleheat.js') }}"></script> <!-- Simpleheat must come first -->
+    <script src="{{ url_for('static', filename='js/HeatLayer.js') }}"></script>
+    
 </head>
 <body>
     <!-- Header elements for the map application -->
@@ -200,7 +203,8 @@
                         travelTimeNormalized = Math.min(Math.max(travelTimeNormalized, 0), 1);
                         return [station.lat, station.lon, travelTimeNormalized];
                     });
-    
+                    console.log("Heatmap Data:", heatmapData);
+
                     // Step 2: Create and add the heatmap layer to the map
                     heatmapLayer = L.heatLayer(heatmapData, {
                         radius: 70,          
