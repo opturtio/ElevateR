@@ -25,12 +25,10 @@ def send_query(query):
     else:
         raise Exception(f"Query failed with status code {response.status_code}: {response.text}")
 
-def elevate():
+def elevate(origin_lat, origin_lon):
     queries = []  # List to store the queries
-    origin_lat = 60.1699  # Latitude of the origin station (Helsinki Central Station)
-    origin_lon = 24.9384  # Longitude of the origin station
 
-    # Get the 100 nearest stations
+    # Get the 100 nearest stations based on the selected station's lat/lon
     nearest_stations = get_nearest_stations(stations, origin_lat, origin_lon, limit=100)
 
     # Build a single GraphQL query for the 100 nearest stations
@@ -40,6 +38,14 @@ def elevate():
         itinerary{i}: plan(
             from: {{lat: {origin_lat}, lon: {origin_lon}}},
             to: {{lat: {station['lat']}, lon: {station['lon']}}},
+            transportModes: [
+                {{ mode: BUS }},
+                {{ mode: TRAM }},
+                {{ mode: SUBWAY }},
+                {{ mode: RAIL }},
+                {{ mode: FERRY }},
+                {{ mode: WALK }}
+            ],
             numItineraries: 1
         ) {{
             itineraries {{
@@ -48,7 +54,6 @@ def elevate():
                     mode
                     startTime
                     endTime
-                    realTime
                     from {{
                         name
                     }}
@@ -69,12 +74,18 @@ def elevate():
         for i, station in enumerate(nearest_stations):
             itinerary_data = response['data'].get(f'itinerary{i}', {})
             travel_time = itinerary_data['itineraries'][0]['duration'] if itinerary_data.get('itineraries') else None
+            legs = itinerary_data['itineraries'][0]['legs'] if itinerary_data.get('itineraries') else []
+
             if travel_time is not None:
+                # Extract transport modes from legs
+                transport_modes = [leg['mode'] for leg in legs]
+                
                 queries.append({
                     'station_name': station['name'],
                     'travel_time': travel_time,
                     'lat': station['lat'],
-                    'lon': station['lon']
+                    'lon': station['lon'],
+                    'transport_modes': transport_modes
                 })
 
     except Exception as e:

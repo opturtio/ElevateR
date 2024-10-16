@@ -34,14 +34,17 @@
     <div id="map"></div>
 
     <script>
+        let selectedLat = null;
+        let selectedLon = null;
+    
         // Initialize the map with a view centered on Helsinki
         const map = L.map('map').setView([60.170677, 24.941514], 12);
-
+    
         // Add OpenStreetMap tiles to the map (basic map rendering)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-
+    
         // Create a cluster group to handle marker clustering with specific options
         const markers = L.markerClusterGroup({
             maxClusterRadius: 40,  // Defines how close markers need to be to cluster together
@@ -57,11 +60,10 @@
                 opacity: 0.3  // Sets the transparency of the spider leg lines
             },
         });
-
-
+    
         // Fetching station data (assumed to be injected server-side using Jinja templating)
         const stations = JSON.parse('{{ stations | tojson | safe }}');
-
+    
         const vehicleTypes = {
             0: 'Tram',
             1: 'Metro',
@@ -69,11 +71,11 @@
             3: 'Bus',
             4: 'Ferry',
         }
-
+    
         // Arrays to store markers for different types of vehicles
         const busTramMarkers = [];
         const nonBusTramMarkers = [];
-
+    
         // Function to return marker color based on the vehicle type
         function getMarkerColor(vehicleType) {
             switch (vehicleType) {
@@ -91,7 +93,7 @@
                     return 'gray';   // Default color for unknown/other types
             }
         }
-
+    
         // Loop through all the stations and create markers accordingly
         stations.forEach(station => {
             // Determine the color based on the station's vehicle type
@@ -105,8 +107,7 @@
                 3: 'fa-bus',         // Bus
                 4: 'fa-ship',        // Ferry
             };
-
-
+    
             // Create a colored marker using the AwesomeMarkers plugin
             const coloredMarker = L.AwesomeMarkers.icon({
                 icon: vehicleIcons[station.vehicleType],
@@ -116,8 +117,14 @@
             
             // Create the marker with the corresponding popup for station details
             const marker = L.marker([station.lat, station.lon], { icon: coloredMarker })
-                .bindPopup(`${station.name} (${vehicleTypes[station.vehicleType]})`);
-
+                .bindPopup(`${station.name} (${vehicleTypes[station.vehicleType]})`)
+                .on('click', function() {
+                    // Capture the selected station's lat/lon
+                    selectedLat = station.lat;
+                    selectedLon = station.lon;
+                    alert(`Station selected: ${station.name}`);
+                });
+    
             // Separate bus and tram markers from other vehicle markers for specific behavior
             if (station.vehicleType === 0 || station.vehicleType === 3) {
                 busTramMarkers.push(marker);
@@ -126,32 +133,32 @@
                 marker.addTo(map);
             }
         });
-
+    
         // Add all non-bus/tram markers to the map at the beginning
         nonBusTramMarkers.forEach(marker => marker.addTo(map));
-
+    
         // Initially add all bus and tram markers to the cluster group
         map.addLayer(markers);
         busTramMarkers.forEach(marker => {
             markers.addLayer(marker);
         });
-
+    
         // Event listener for when the zoom starts
         map.on('zoomstart', function() {
             const currentZoom = map.getZoom();
             const zoomThreshold = 14;
-
+    
             if (currentZoom <= zoomThreshold) {
                 // Remove individual bus and tram markers before zooming out (if zoomed out enough)
                 busTramMarkers.forEach(marker => marker.removeFrom(map));
             }
         });
-
+    
         // Event listener for when zooming ends
         map.on('zoomend', function() {
             const currentZoom = map.getZoom();
             const zoomThreshold = 14;
-
+    
             if (currentZoom <= zoomThreshold) {
                 // If zoomed out enough (zoom level 14 or lower), add bus/tram markers to the cluster
                 busTramMarkers.forEach(marker => {
@@ -165,49 +172,56 @@
                 });
             }
         });
-
+    
         // Event listener for the Elevate button
         document.getElementById('elevateButton').addEventListener('click', function() {
-            // Send a POST request to trigger the elevation process
-            fetch('/elevate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json(); // Parse the JSON response if the request is successful
-                } else {
-                    throw new Error('Failed to trigger elevation process');
-                }
-            })
-            .then(data => {
-                alert('Elevation process triggered successfully!');
-                
-                // Step 1: Prepare heatmap data using the station data returned from the backend
-                const heatmapData = data.map(station => {
-                    return [station.lat, station.lon, (station.travel_time)/1000]; // Default intensity value of 1
-                });
-
-                // Step 2: Create and add the heatmap layer to the map
-                const heatmapLayer = L.heatLayer(heatmapData, {
-                    radius: 25,           // Radius of each "point" of the heatmap
-                    blur: 15,             // Amount of blur for each point
-                    maxZoom: 12,          // Maximum zoom level where the heatmap will be fully visible
-                    max: 1.0,             // Maximum intensity value of the heatmap
-                    gradient: {           // Custom color gradient for the heatmap
-                        0.4: 'blue',
-                        0.65: 'green',
-                        1: 'red'
+            if (selectedLat && selectedLon) {
+                // Send a POST request to trigger the elevation process with the selected station's lat/lon
+                fetch('/elevate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        lat: selectedLat,
+                        lon: selectedLon
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json(); // Parse the JSON response if the request is successful
+                    } else {
+                        throw new Error('Failed to trigger elevation process');
                     }
-                }).addTo(map);
-            })
-            .catch(error => {
-                alert('Error during elevation process:', error);
-            });
-        });
+                })
+                .then(data => {
+                    alert('Elevation process triggered successfully!');
+                    
+                    // Step 1: Prepare heatmap data using the station data returned from the backend
+                    const heatmapData = data.map(station => {
+                        return [station.lat, station.lon, (station.travel_time)/1000]; // Default intensity value of 1
+                    });
 
-    </script>
+                    // Step 2: Create and add the heatmap layer to the map
+                    const heatmapLayer = L.heatLayer(heatmapData, {
+                        radius: 25,           // Radius of each "point" of the heatmap
+                        blur: 15,             // Amount of blur for each point
+                        maxZoom: 12,          // Maximum zoom level where the heatmap will be fully visible
+                        max: 1.0,             // Maximum intensity value of the heatmap
+                        gradient: {           // Custom color gradient for the heatmap
+                            0.4: 'blue',
+                            0.65: 'green',
+                            1: 'red'
+                        }
+                    }).addTo(map);
+                })
+                .catch(error => {
+                    alert('Error during elevation process:', error);
+                });
+            } else {
+                alert('Please select a station on the map.');
+            }
+        });
+    </script>    
 </body>
 </html>

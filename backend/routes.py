@@ -1,4 +1,4 @@
-from flask import render_template, jsonify
+from flask import render_template, jsonify, request
 from app import app, stations
 from backend.elevate import elevate
 
@@ -10,7 +10,11 @@ def index():
 @app.route('/elevate', methods=['POST'])
 def trigger_elevate():
     try:
-        nearest_stations = elevate()
+        data = request.get_json()
+        lat = data.get('lat')
+        lon = data.get('lon')
+
+        nearest_stations = elevate(lat, lon)
         return jsonify(nearest_stations), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500 
