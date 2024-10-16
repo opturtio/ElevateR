@@ -222,16 +222,15 @@
 
                     // Step 2: Create and add the heatmap layer to the map
                     const heatmapLayer = L.heatLayer(heatmapData, {
-                        radius: 50,          // Larger radius for better visibility of the heatmap
-                        blur: 40,            // Increased blur for smoother transitions
-                        opacity: 0.8,        // Overall opacity of the heatmap layer
+                        radius: 100,          // Larger radius for better visibility of the heatmap
+                        opacity: 0.1,        // Overall opacity of the heatmap layer
                         maxZoom: 12,         // Maximum zoom level for the heatmap to be visible
                         gradient: {          // Custom color gradient based on travel time
                             0.0: 'lightblue',    // Shortest travel time
                             0.25: 'blue',
-                            0.5: 'orange', 
-                            0.75: 'red',     // Medium travel time
-                            1.0: 'darkred'   // Longest travel time
+                            0.5: 'yellow', 
+                            0.75: 'orange',     // Medium travel time
+                            1.0: 'red'   // Longest travel time
                         }
                     }).addTo(map);
                 })
