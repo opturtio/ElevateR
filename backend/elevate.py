@@ -76,14 +76,9 @@ def elevate():
                     'lat': station['lat'],
                     'lon': station['lon']
                 })
-                print(f"Travel time to {station['name']}: {travel_time / 60:.2f} minutes")
-            else:
-                print(f"No itinerary found for {station['name']}")
 
     except Exception as e:
         print(f"Error querying stations: {str(e)}")
-
-    print(f"Queries result: {queries}")
     return queries
 
 def get_nearest_stations(stations, origin_lat, origin_lon, limit=100):
