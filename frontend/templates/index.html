@@ -28,17 +28,22 @@
             <h3>Elevation Map for Public Transport Travel Time</h3>
         </header>
 
+        <!-- Div for the map -->
+        <div id="map"></div>
+
+        <!-- Text box to display the selected bus stop -->
+        <div id="elevateDiv">
+            <input id="selectedBusStop" value="Select a bus stop" class="prevent-select" readonly />
+        </div>
+        
         <!-- Div containing the elevate button -->
         <div id="elevateDiv">
             <button id="elevateButton">Elevate</button>
         </div>
 
-        <!-- Div for the map -->
-        <div id="map"></div>
-
         <!-- Footer section -->
         <footer>
-            <p id="footertext">&copy; 2021 | ElevateR</p>
+            <p id="footertext">&copy; 2024 | ElevateR</p>
         </footer>
 
         <!-- Script to parse stations data from the server -->
