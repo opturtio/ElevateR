@@ -6,6 +6,7 @@ html, body {
     background-color: #f0f2f5;
     font-family: 'Roboto', sans-serif;
     color: #333;
+    user-select: none; /* Make text non-selectable */
 }
 
 /* Add some global styles for better typography */
@@ -55,7 +56,7 @@ header h3 {
 
 /* Map container styles */
 #map {
-    height: 80vh;
+    height: 70vh;
     width: 100%;
     margin: 1em auto;
     border: 2px solid #4CAF50;
@@ -132,6 +133,7 @@ header h3 {
     font-size: 16px;
     font-family: 'Roboto', sans-serif;
     transition: 0.3s ease-in-out;
+    text-transform: uppercase;
 }
 
 #elevateButton:hover {
@@ -145,8 +147,6 @@ header h3 {
     margin: 0.5em 0; /* Reduced margin */
     background-color: #4CAF50; /* Consistent background color */
     padding: 0.5em; /* Reduced padding */
-    border-radius: 10px; /* Added border radius for rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added box shadow for a subtle effect */
     margin: 0;
     padding: 0.2em 0;
 }
@@ -162,6 +162,7 @@ header h3 {
     box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
 }
 
+<<<<<<< HEAD
 button#elevateButton {
     background-color: #4CAF50;
     color: white;
@@ -172,3 +173,31 @@ button#elevateButton {
     border-radius: 5px;
 }
 
+#selectedBusStop {
+    width: 50%;
+    padding: 10px;
+    font-size: 2em;
+    font-family: 'Roboto', sans-serif;
+    text-transform: capitalize;
+    color: #ffffff;
+    background-color: #4CAF50;
+    border: none;
+    border-bottom: 2px solid #4CAF50;
+    border-radius: 5px;
+    text-align: center;
+    outline: none;
+    user-select: none; /* Make text non-selectable */
+}
+
+/* Keyframes for button animation */
+@keyframes electricFlicker {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(255, 255, 0, 0.8), 0 0 20px rgba(0, 81, 255, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 40px rgba(249, 56, 56, 0.8);
+    }
+    75% {
+        box-shadow: 0 0 15px rgba(208, 249, 4, 0.3), 0 0 30px rgba(0, 81, 255, 0.5);
+    }
+}

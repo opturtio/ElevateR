@@ -43,6 +43,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const busTramMarkers = [];
     const nonBusTramMarkers = [];
 
+    // Function to update selected bus stop
+    function updateSelectedBusStop(busStopName) {
+        document.getElementById('selectedBusStop').value = busStopName || 'Select a bus stop';
+    }
+
     // Function to return marker color based on the vehicle type
     function getMarkerColor(vehicleType) {
         switch (vehicleType) {
@@ -85,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .on('click', function() {
                 selectedLat = station.lat;
                 selectedLon = station.lon;
+                updateSelectedBusStop(station.name); // Update the selected bus stop
             });
 
         // Separate markers into bus/tram and non-bus/tram categories
@@ -119,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener for when zooming ends
     map.on('zoomend', function() {
         const currentZoom = map.getZoom();
-        const zoomThreshold = 14;
+        const zoomThreshold = 30;
 
         // Add or remove bus/tram markers based on zoom level
         if (currentZoom <= zoomThreshold) {
