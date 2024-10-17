@@ -1,55 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <!-- Viewport meta tag to ensure responsiveness on mobile devices -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Descriptive title for the page -->
-    <title>ElevateR</title>
-    
-    <!-- External CSS files for Leaflet and other dependencies -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/leaflet.awesome-markers.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}" />
-    
-    <!-- External JS libraries: Leaflet.js for maps and MarkerCluster plugin -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-    <script src="{{ url_for('static', filename='js/leaflet.awesome-markers.js') }}"></script>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ElevateR</title>
 
-    <!-- Custom HeatMap JS -->
-    <script src="{{ url_for('static', filename='js/simpleheat.js') }}"></script> <!-- Simpleheat must come first -->
-    <script src="{{ url_for('static', filename='js/HeatLayer.js') }}"></script>
-    
-</head>
-<body>
-    <!-- Header elements for the map application -->
-    <header>
-        <h1>ElevateR</h1>
-        <h3>Elevation Map for Public Transport Travel Time</h3>
-    </header>
+        <!-- External CSS files for Leaflet and other dependencies -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/leaflet.awesome-markers.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}" />
+        
+        <!-- External JS libraries: Leaflet.js for maps and MarkerCluster plugin -->
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+        <script src="{{ url_for('static', filename='js/leaflet.awesome-markers.js') }}"></script>
 
-    <!-- Button for triggering an elevation calculation (example functionality) -->
-    <div id="elevateDiv">
-        <button id="elevateButton">Elevate</button>
-    </div>
+        <!-- Custom HeatMap JS -->
+        <script src="{{ url_for('static', filename='js/simpleheat.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/HeatLayer.js') }}"></script>
+    </head>
+    <body>
+        <!-- Header section with the main title and subtitle -->
+        <header>
+            <h1>ElevateR</h1>
+            <h3>Elevation Map for Public Transport Travel Time</h3>
+        </header>
 
-    <!-- Map container where Leaflet will render the map -->
-    <div id="map"></div>
+        <!-- Div containing the elevate button -->
+        <div id="elevateDiv">
+            <button id="elevateButton">Elevate</button>
+        </div>
 
-    <script>
-        // Embed the station data directly into the HTML using Jinja templating
-        const stations = JSON.parse('{{ stations | tojson | safe }}');
-    </script>
+        <!-- Div for the map -->
+        <div id="map"></div>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+        <!-- Footer section -->
+        <footer>
+            <p id="footertext">&copy; 2021 | ElevateR</p>
+        </footer>
 
-    <!-- Footer elements for the map application -->
-    <footer>
-        <p id="footertext">&copy; 2021 | ElevateR</p>
-    </footer>
-</body>
+        <!-- Script to parse stations data from the server -->
+        <script>
+            const stations = JSON.parse('{{ stations | tojson | safe }}');
+        </script>
+
+        <!-- Main JavaScript file for the application -->
+        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    </body>
 </html>

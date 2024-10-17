@@ -38,6 +38,8 @@ header {
     color: white;
     padding: 2em 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 0;
+    padding: 1em 0;
 }
 
 header h1 {
@@ -145,6 +147,8 @@ header h3 {
     padding: 0.5em; /* Reduced padding */
     border-radius: 10px; /* Added border radius for rounded corners */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added box shadow for a subtle effect */
+    margin: 0;
+    padding: 0.2em 0;
 }
 
 /* Footer styles */
