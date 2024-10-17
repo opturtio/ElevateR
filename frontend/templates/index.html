@@ -23,15 +23,17 @@
     <!-- Custom HeatMap JS -->
     <script src="{{ url_for('static', filename='js/simpleheat.js') }}"></script> <!-- Simpleheat must come first -->
     <script src="{{ url_for('static', filename='js/HeatLayer.js') }}"></script>
-    
 </head>
 <body>
     <!-- Header elements for the map application -->
-    <h1>ElevateR</h1>
-    <h3>Elevation Map for Public Transport Travel Time</h3>
-
-    <!-- Button for triggering an elevation calculation (example functionality) -->
-    <button id="elevateButton">Elevate</button>
+    <div class="header-container">
+        <div class="header-content">
+            <h1>ElevateR</h1>
+            <h3>Elevated Route for your convenience</h3>
+        </div>
+        <!-- Button for triggering an elevation calculation (example functionality) -->
+        <button id="elevateButton">Elevate</button>
+    </div>
 
     <!-- Map container where Leaflet will render the map -->
     <div id="map"></div>
