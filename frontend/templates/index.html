@@ -28,18 +28,18 @@
 </head>
 <body>
     <!-- Header elements for the map application -->
-    <header style="text-align: center; background-color: #4CAF50; color: white; padding: 1em 0;">
+    <header>
         <h1>ElevateR</h1>
         <h3>Elevation Map for Public Transport Travel Time</h3>
     </header>
 
     <!-- Button for triggering an elevation calculation (example functionality) -->
     <div style="text-align: center; margin: 1em 0;">
-        <button id="elevateButton" style="background-color: #4CAF50; color: white; border: none; padding: 0.5em 1em; font-size: 1em; cursor: pointer; border-radius: 5px;">Elevate</button>
+        <button id="elevateButton">Elevate</button>
     </div>
 
     <!-- Map container where Leaflet will render the map -->
-    <div id="map" style="height: 80vh; margin: 0 1em; border: 2px solid #4CAF50; border-radius: 10px; max-width: 98.5%;"></div>
+    <div id="map"></div>
 
 
     <script>
@@ -65,7 +65,7 @@
             showCoverageOnHover: true, 
             animate: true,
             removeOutsideVisibleBounds: true,  
-            disableClusteringAtZoom: 10, 
+            disableClusteringAtZoom: 15, 
             spiderLegPolylineOptions: { 
                 weight: 0.5, 
                 color: '#222',

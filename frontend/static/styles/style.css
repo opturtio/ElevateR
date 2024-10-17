@@ -6,8 +6,11 @@ html, body {
 }
 
 #map {
-    height: 87.5%; /* Reduced margin */
-    width: 100%;
+    height: 80vh;
+    margin: 0 1em;
+    border: 2px solid #4CAF50;
+    border-radius: 10px;
+    max-width: 98.5%;
 }
 
 /* Center the header content */
@@ -109,19 +112,18 @@ html, body {
 
 
 header {
-    text-align: center; 
-    background-color: #4CAF50; 
-    color: white; 
+    text-align: center;
+    background-color: #4CAF50;
+    color: white;
     padding: 1em 0;
 }
 
-button {
-    background-color: #4CAF50; 
-    color: white; 
-    padding: 0.5em 1em; 
-    border: none; 
+button#elevateButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    font-size: 1em;
     cursor: pointer;
-    font-size: 1em; 
     border-radius: 5px;
 }
-
