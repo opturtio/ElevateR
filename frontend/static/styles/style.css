@@ -48,3 +48,19 @@ html, body {
 }
 
 
+header {
+    text-align: center; 
+    background-color: #4CAF50; 
+    color: white; 
+    padding: 1em 0;
+}
+
+button {
+    background-color: #4CAF50; 
+    color: white; 
+    padding: 0.5em 1em; 
+    border: none; 
+    cursor: pointer;
+    font-size: 1em; 
+    border-radius: 5px;
+}
