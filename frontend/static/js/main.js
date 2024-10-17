@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Your code here will run once the DOM is fully loaded
     let selectedLat = null;
     let selectedLon = null;
+    let selectedMarker = null;  // Track the currently selected marker
+    let lastElevatedMarker = null;  // Track the last elevated marker
     let heatmapLayer = null;  // Declare a global variable for the heatmap layer
 
     // Initialize the map with a view centered on Helsinki
@@ -66,6 +68,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Function to reset marker color to its original state
+    function resetMarkerColor(marker, vehicleType) {
+        const vehicleIcons = {
+            0: 'fa-subway',     
+            1: 'fa-subway',     
+            109: 'fa-train',    
+            3: 'fa-bus',        
+            4: 'fa-ship',       
+        };
+
+        marker.setIcon(L.AwesomeMarkers.icon({
+            icon: vehicleIcons[vehicleType],
+            markerColor: getMarkerColor(vehicleType),
+            prefix: 'fa'
+        }));
+    }
+
     // Loop through all the stations and create markers accordingly
     stations.forEach(station => {
         const markerColor = getMarkerColor(station.vehicleType);
@@ -88,8 +107,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const marker = L.marker([station.lat, station.lon], { icon: coloredMarker })
             .bindPopup(`${station.name} (${vehicleTypes[station.vehicleType]})`)
             .on('click', function() {
+                // Reset the color of the previously selected marker to its original color (except for the elevated marker)
+                if (selectedMarker && selectedMarker !== marker && selectedMarker !== lastElevatedMarker) {
+                    resetMarkerColor(selectedMarker, selectedMarker.vehicleType);
+                }
+
+                // Set the new selected marker's color to cadet blue
                 selectedLat = station.lat;
                 selectedLon = station.lon;
+                selectedMarker = marker;
+                    selectedMarker.vehicleType = station.vehicleType;  // Store vehicle type for resetting
+    
+                    // Change the color of the selected marker to cadet blue
+                    marker.setIcon(L.AwesomeMarkers.icon({
+                        icon: vehicleIcons[station.vehicleType],
+                        markerColor: 'cadetblue',
+                        prefix: 'fa'
+                    }));
                 updateSelectedBusStop(station.name); // Update the selected bus stop
             });
 
@@ -141,6 +175,30 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener for the "Elevate" button
     document.getElementById('elevateButton').addEventListener('click', function() {
         if (selectedLat && selectedLon) {
+            // If there's a previously elevated marker and it's different from the currently selected marker,
+            // reset its color to the original marker color (but keep its icon)
+            if (lastElevatedMarker && lastElevatedMarker !== selectedMarker) {
+                resetMarkerColor(lastElevatedMarker, lastElevatedMarker.vehicleType);
+            }
+
+            // Change the currently selected marker color to black (while keeping its icon)
+            const vehicleIcons = {
+                0: 'fa-subway',     
+                1: 'fa-subway',     
+                109: 'fa-train',    
+                3: 'fa-bus',        
+                4: 'fa-ship',       
+            };
+
+            selectedMarker.setIcon(L.AwesomeMarkers.icon({
+                icon: vehicleIcons[selectedMarker.vehicleType],
+                markerColor: 'black',
+                prefix: 'fa'
+            }));
+
+            // Store the currently elevated marker
+            lastElevatedMarker = selectedMarker;
+            
             // Send a POST request to trigger the elevation process with the selected station's lat/lon
             fetch('/elevate', {
                 method: 'POST',
