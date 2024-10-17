@@ -23,20 +23,24 @@
     <!-- Custom HeatMap JS -->
     <script src="{{ url_for('static', filename='js/simpleheat.js') }}"></script> <!-- Simpleheat must come first -->
     <script src="{{ url_for('static', filename='js/HeatLayer.js') }}"></script>
+    <script src="static/js/main.js"></script> <!-- Reference to the new JavaScript file -->
+    
 </head>
 <body>
     <!-- Header elements for the map application -->
-    <div class="header-container">
-        <div class="header-content">
-            <h1>ElevateR</h1>
-            <h3>Elevated Route for your convenience</h3>
-        </div>
-        <!-- Button for triggering an elevation calculation (example functionality) -->
-        <button id="elevateButton">Elevate</button>
+    <header style="text-align: center; background-color: #4CAF50; color: white; padding: 1em 0;">
+        <h1>ElevateR</h1>
+        <h3>Elevation Map for Public Transport Travel Time</h3>
+    </header>
+
+    <!-- Button for triggering an elevation calculation (example functionality) -->
+    <div style="text-align: center; margin: 1em 0;">
+        <button id="elevateButton" style="background-color: #4CAF50; color: white; border: none; padding: 0.5em 1em; font-size: 1em; cursor: pointer; border-radius: 5px;">Elevate</button>
     </div>
 
     <!-- Map container where Leaflet will render the map -->
-    <div id="map"></div>
+    <div id="map" style="height: 80vh; margin: 0 1em; border: 2px solid #4CAF50; border-radius: 10px; max-width: 98.5%;"></div>
+
 
     <script>
         let selectedLat = null;
@@ -44,15 +48,15 @@
         let selectedMarker = null;  // Track the currently selected marker
         let lastElevatedMarker = null;  // Track the last elevated marker
         let heatmapLayer = null;  // Declare a global variable for the heatmap layer
-    
+
         // Initialize the map with a view centered on Helsinki
         const map = L.map('map').setView([60.170677, 24.941514], 12);
-    
+
         // Add OpenStreetMap tiles to the map (basic map rendering)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copy</link>right">OpenStreetMap</a> contributors'
         }).addTo(map);
-    
+
         // Create a cluster group to handle marker clustering with specific options
         const markers = L.markerClusterGroup({
             maxClusterRadius: 40, 
@@ -61,17 +65,17 @@
             showCoverageOnHover: true, 
             animate: true,
             removeOutsideVisibleBounds: true,  
-            disableClusteringAtZoom: 14, 
+            disableClusteringAtZoom: 10, 
             spiderLegPolylineOptions: { 
                 weight: 0.5, 
                 color: '#222',
                 opacity: 0.3
             },
         });
-    
+
         // Fetching station data (assumed to be injected server-side using Jinja templating)
         const stations = JSON.parse('{{ stations | tojson | safe }}');
-    
+
         const vehicleTypes = {
             0: 'Tram',
             1: 'Metro',
@@ -79,11 +83,11 @@
             3: 'Bus',
             4: 'Ferry',
         }
-    
+
         // Arrays to store markers for different types of vehicles
         const busTramMarkers = [];
         const nonBusTramMarkers = [];
-    
+
         // Function to return marker color based on the vehicle type
         function getMarkerColor(vehicleType) {
             switch (vehicleType) {
@@ -101,24 +105,7 @@
                     return 'gray';   // Default color for unknown/other types
             }
         }
-    
-        // Function to reset marker color to its original state
-        function resetMarkerColor(marker, vehicleType) {
-            const vehicleIcons = {
-                0: 'fa-subway',     
-                1: 'fa-subway',     
-                109: 'fa-train',    
-                3: 'fa-bus',        
-                4: 'fa-ship',       
-            };
-    
-            marker.setIcon(L.AwesomeMarkers.icon({
-                icon: vehicleIcons[vehicleType],
-                markerColor: getMarkerColor(vehicleType),
-                prefix: 'fa'
-            }));
-        }
-    
+
         // Loop through all the stations and create markers accordingly
         stations.forEach(station => {
             const markerColor = getMarkerColor(station.vehicleType);
@@ -129,14 +116,14 @@
                 3: 'fa-bus',        
                 4: 'fa-ship',       
             };
-    
+
             // Create a colored marker using the AwesomeMarkers plugin
             const coloredMarker = L.AwesomeMarkers.icon({
                 icon: vehicleIcons[station.vehicleType],
                 markerColor: markerColor,
                 prefix: 'fa'
             });
-    
+
             // Create the marker with the corresponding popup for station details
             const marker = L.marker([station.lat, station.lon], { icon: coloredMarker })
                 .bindPopup(`${station.name} (${vehicleTypes[station.vehicleType]})`)
@@ -159,7 +146,8 @@
                         prefix: 'fa'
                     }));
                 });
-    
+
+            // Separate markers into bus/tram and non-bus/tram categories
             if (station.vehicleType === 0 || station.vehicleType === 3) {
                 busTramMarkers.push(marker);
             } else {
@@ -167,31 +155,33 @@
                 marker.addTo(map);
             }
         });
-    
+
         // Add all non-bus/tram markers to the map at the beginning
         nonBusTramMarkers.forEach(marker => marker.addTo(map));
-    
+
         // Initially add all bus and tram markers to the cluster group
         map.addLayer(markers);
         busTramMarkers.forEach(marker => {
             markers.addLayer(marker);
         });
-    
+
         // Event listener for when the zoom starts
         map.on('zoomstart', function() {
             const currentZoom = map.getZoom();
             const zoomThreshold = 14;
-    
+
+            // Remove bus/tram markers from the map if zoom level is below threshold
             if (currentZoom <= zoomThreshold) {
                 busTramMarkers.forEach(marker => marker.removeFrom(map));
             }
         });
-    
+
         // Event listener for when zooming ends
         map.on('zoomend', function() {
             const currentZoom = map.getZoom();
             const zoomThreshold = 14;
-    
+
+            // Add or remove bus/tram markers based on zoom level
             if (currentZoom <= zoomThreshold) {
                 busTramMarkers.forEach(marker => markers.addLayer(marker));
             } else {
@@ -201,7 +191,8 @@
                 });
             }
         });
-    
+
+        // Event listener for the "Elevate" button
         document.getElementById('elevateButton').addEventListener('click', function() {
             if (selectedLat && selectedLon) {
                 // If there's a previously elevated marker and it's different from the currently selected marker,
@@ -248,15 +239,15 @@
                 })
                 .then(data => {
                     alert('Elevation process triggered successfully!');
-    
+
                     const maxTravelTime = Math.max(...data.map(station => station.travel_time));
                     const minTravelTime = Math.min(...data.map(station => station.travel_time));
-    
+
                     // Remove existing heatmap layer if it exists
                     if (heatmapLayer) {
                         map.removeLayer(heatmapLayer);
                     }
-    
+
                     // Step 1: Prepare heatmap data using the station data returned from the backend
                     const heatmapData = data.map(station => {
                         let travelTimeNormalized = (station.travel_time - minTravelTime) / (maxTravelTime - minTravelTime);
