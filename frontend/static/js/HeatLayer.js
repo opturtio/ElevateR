@@ -171,7 +171,7 @@ L.HeatLayer = (L.Layer ? L.Layer : L.Class).extend({
                 } else {
                     cell[0] = (cell[0] * cell[2] + p.x * k) / (cell[2] + k); // x
                     cell[1] = (cell[1] * cell[2] + p.y * k) / (cell[2] + k); // y
-                    cell[2] = k; // this prevents overlapping of colors
+                    cell[2] = k; // un-cumulated intensity value
                 }
             }
         }
