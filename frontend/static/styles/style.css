@@ -4,9 +4,9 @@ html, body {
     margin: 0;
     padding: 0;
     background-color: #f0f2f5;
-    font-family: 'Roboto', sans-serif;
     color: #333;
     user-select: none; /* Make text non-selectable */
+    font-family: 'Lato', sans-serif;
 }
 
 /* Add some global styles for better typography */
