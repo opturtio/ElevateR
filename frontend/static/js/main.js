@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Step 2: Create and add the heatmap layer to the map
                 heatmapLayer = L.heatLayer(heatmapData, {
                     radius: 15,
-                    blur: 3,         
+                    blur: 2,         
                     opacity: 1,
                     maxZoom: 0,        
                     gradient: {         
