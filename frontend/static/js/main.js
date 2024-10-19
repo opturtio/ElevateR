@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener for when zooming ends
     map.on('zoomend', function() {
         const currentZoom = map.getZoom();
-        const zoomThreshold = 30;
+        const zoomThreshold = 14;
 
         // Add or remove bus/tram markers based on zoom level
         if (currentZoom <= zoomThreshold) {
