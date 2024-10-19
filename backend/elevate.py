@@ -29,7 +29,7 @@ def elevate(origin_lat, origin_lon):
     queries = []  # List to store the queries
 
     # Get the 100 nearest stations based on the selected station's lat/lon
-    nearest_stations = get_nearest_stations(stations, origin_lat, origin_lon, limit=162)
+    nearest_stations = get_nearest_stations(stations, origin_lat, origin_lon, limit=110)
 
     # Build a single GraphQL query for the 100 nearest stations
     query_parts = []
