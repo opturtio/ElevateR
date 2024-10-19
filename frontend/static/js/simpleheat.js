@@ -48,8 +48,8 @@ simpleheat.prototype = {
     },
 
     radius: function (r, blur) {
-        blur = 0;  // No blur as per your requirement
-
+        blur = blur;
+        
         var circle = this._circle = this._createCanvas(),
             ctx = circle.getContext('2d'),
             r2 = this._r = r + blur;
