@@ -168,9 +168,9 @@ classDiagram
     Frontend --> leaflet_awesome_markers_js
     Frontend --> style_css
 
-    index_html --> routes  %% Flask serves the HTML file
+    index_html --> routes
     main_js --> Leaflet
-    main_js --> routes  %% JS sends requests to Flask
+    main_js --> routes
     HeatLayer_js --> Leaflet
     simpleheat_js --> HeatLayer_js
     leaflet_awesome_markers_js --> Leaflet
