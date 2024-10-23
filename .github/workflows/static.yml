@@ -41,8 +41,13 @@ jobs:
           mkdir -p public
           # Copy index.html to the root of the public directory
           cp frontend/templates/index.html public/
-          # Copy static assets (js, css) to the public directory
-          cp -R frontend/static public/static
+          # Copy static assets (js, css) to the correct subdirectories
+          mkdir -p public/static/js
+          mkdir -p public/static/styles
+          # Copy JS files
+          cp -R frontend/static/js public/static/js/
+          # Copy CSS/Style files
+          cp -R frontend/static/styles public/static/styles/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
