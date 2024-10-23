@@ -161,23 +161,24 @@ classDiagram
     routes --|> Elevate
     routes --|> Frontend
 
-    Frontend --|> index_html
-    Frontend --|> main_js
-    Frontend --|> HeatLayer_js
-    Frontend --|> simpleheat_js
-    Frontend --|> leaflet_awesome_markers_js
-    Frontend --|> style_css
+    Frontend --> index_html
+    Frontend --> main_js
+    Frontend --> HeatLayer_js
+    Frontend --> simpleheat_js
+    Frontend --> leaflet_awesome_markers_js
+    Frontend --> style_css
 
-    index_html --|> routes  %% Flask serves the HTML file
-    main_js --|> Leaflet
+    index_html --> routes  %% Flask serves the HTML file
+    main_js --> Leaflet
     main_js --> routes  %% JS sends requests to Flask
-    HeatLayer_js --|> Leaflet
-    simpleheat_js --|> HeatLayer_js
-    leaflet_awesome_markers_js --|> Leaflet
-    style_css --|> Frontend
+    HeatLayer_js --> Leaflet
+    simpleheat_js --> HeatLayer_js
+    leaflet_awesome_markers_js --> Leaflet
+    style_css --> Frontend
 
-    HSLAPI --|> GraphQL
-    Flask --|> CORS
+    HSLAPI --> GraphQL
+    Flask --> CORS
+
 ```
 
 ## Simple Sequence Diagram Illustrating the Basic Functionality
