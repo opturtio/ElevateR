@@ -31,13 +31,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
+      - name: Build Site
+        run: |
+          # Create a public directory for the deployment
+          mkdir -p public
+          # Copy index.html to the root of the public directory
+          cp frontend/templates/index.html public/
+          # Copy static assets (js, css) to the public directory
+          cp -R frontend/static public/static
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: '.'
+          # Upload only the public directory with the correct files
+          path: './public'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
