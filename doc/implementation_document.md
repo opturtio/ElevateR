@@ -149,36 +149,28 @@ ElevateR/
 ## Class Diagram
 ```mermaid
 classDiagram
-    App --|> FetchStations
-    App --|> Elevate
-    FetchStations --|> HSLAPI
-    Elevate --|> HSLAPI
+    App --> FetchStations
+    App --> Elevate
+    FetchStations --> HSLAPI
+    Elevate --> HSLAPI
 
     App --> routes
 
-    routes --|> Flask
-    routes --|> FetchStations
-    routes --|> Elevate
-    routes --|> Frontend
+    routes --> Flask
+    routes --> FetchStations
+    routes --> Elevate
+    routes --> index_html
+    routes --> main_js
 
-    Frontend --> index_html
-    Frontend --> main_js
-    Frontend --> HeatLayer_js
-    Frontend --> simpleheat_js
-    Frontend --> leaflet_awesome_markers_js
-    Frontend --> style_css
-
-    index_html --> routes
     main_js --> Leaflet
     main_js --> routes
     HeatLayer_js --> Leaflet
     simpleheat_js --> HeatLayer_js
     leaflet_awesome_markers_js --> Leaflet
-    style_css --> Frontend
+    style_css --> index_html
 
     HSLAPI --> GraphQL
     Flask --> CORS
-
 ```
 
 ## Simple Sequence Diagram Illustrating the Basic Functionality
