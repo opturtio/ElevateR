@@ -4,3 +4,5 @@ This project is for the Introduction to Data Science course, which is part of th
 
 ## Documentation
 [Installation and Setup Guide](/doc/installation_and_setup_guide.md)
+
+[Implementation Document](/doc/implementation_document.md)
