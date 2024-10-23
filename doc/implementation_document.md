@@ -9,7 +9,7 @@ The application has both a backend, written in Python using Flask, and a fronten
 ## Features
 
 1. **Map Visualization**:
-   - Display a map of Helsinki using Leaflet.
+   - Display a map of Helsinki Metropolitan area using Leaflet.
    - Cluster and display markers for public transport stations.
    - Different colors and icons represent different types of transport (bus, tram, train, metro, ferry).
 
