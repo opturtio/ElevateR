@@ -38,7 +38,7 @@ python3
 **Run commands in interpreter and copy the secret key:**
 ```python
 import secrets
-secrets.token_hex(16)
+secrets.token_hex(64)
 ```
 
 ### **You need to register to [DigiTransit](https://digitransit.fi/en/developers/api-registration/) to obtain an HSL API key!**
@@ -65,7 +65,7 @@ flask run
 http://127.0.0.1:5000/
 ```
 
-### Exit virtual environment:
+### To exit virtual environment:
 ```bash
 deactivate
 ```
