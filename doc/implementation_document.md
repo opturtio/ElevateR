@@ -160,25 +160,25 @@ classDiagram
     routes --|> FetchStations
     routes --|> Elevate
 
-    Frontend --|> index.html
-    Frontend --|> main.js
-    Frontend --|> HeatLayer.js
-    Frontend --|> simpleheat.js
-    Frontend --|> leaflet.awesome-markers.js
-    Frontend --|> style.css
+    Frontend --|> index_html
+    Frontend --|> main_js
+    Frontend --|> HeatLayer_js
+    Frontend --|> simpleheat_js
+    Frontend --|> leaflet_awesome_markers_js
+    Frontend --|> style_css
 
-    index.html --|> Frontend
-    main.js --|> Leaflet
-    HeatLayer.js --|> Leaflet
-    simpleheat.js --|> HeatLayer.js
-    leaflet.awesome-markers.js --|> Leaflet
-    style.css --|> Frontend
+    index_html --|> Frontend
+    main_js --|> Leaflet
+    HeatLayer_js --|> Leaflet
+    simpleheat_js --|> HeatLayer_js
+    leaflet_awesome_markers_js --|> Leaflet
+    style_css --|> Frontend
 
     HSLAPI --|> GraphQL
     Flask --|> CORS
 ```
 
-## Sequence Diagram
+## Simple Sequence Diagram Illustrating the Basic Functionality
 ```mermaid
 sequenceDiagram
     participant User
