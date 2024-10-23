@@ -10,7 +10,7 @@ The application has both a backend, written in Python using Flask, and a fronten
 
 1. **Map Visualization**:
    - Display a map of Helsinki Metropolitan area using Leaflet.
-   - Cluster and display markers for public transport stations.
+   - Cluster bus and tram stations and display markers for public transport stations.
    - Different colors and icons represent different types of transport (bus, tram, train, metro, ferry).
 
 2. **Station Selection**:
@@ -19,6 +19,7 @@ The application has both a backend, written in Python using Flask, and a fronten
 
 3. **Elevation Feature**:
    - After selecting a station, the user can press an "Elevate" button.
+   - The selected marker changes color to black to indicate elevation launched from that station.
    - This triggers a backend process that fetches travel times between the selected station and the nearest 100 stations.
    - A heatmap is generated, color-coded based on travel time from the selected station to nearby stations.
 
