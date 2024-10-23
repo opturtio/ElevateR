@@ -1,7 +1,5 @@
 # Installation and Setup Guide
 
-**You need to have PostgreSQL installed!**
-
 ### Clone the project:
 ```bash
 git clone git@github.com:opturtio/ElevateR.git
@@ -43,15 +41,18 @@ import secrets
 secrets.token_hex(16)
 ```
 
-**Example secret key:**
+### **You need to register to [DigiTransit](https://digitransit.fi/en/developers/api-registration/) to obtain an HSL API key!**
+
+**Example .env-file:**
 ```python
 SECRET_KEY=18fd24bf6a2ad4dac04a33963db1c42f
+HSL_API_KEY='6k6l2e50315248cf24kl44e5d995all1'
 ```
 
 ### Add the two lines to the .env file
 ```python
-DATABASE_URL=postgresql:///user
 SECRET_KEY="THE SECRET KEY YOU CREATED"
+HSL_API_KEY="THE API KEY YOU GET FROM DIGITRANSIT"
 ```
 
 ### Run program:
@@ -63,6 +64,7 @@ flask run
 ```bash
 http://127.0.0.1:5000/
 ```
+
 ### Exit virtual environment:
 ```bash
 deactivate
