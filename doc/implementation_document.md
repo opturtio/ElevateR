@@ -170,7 +170,7 @@ classDiagram
 
     index_html --|> routes  %% Flask serves the HTML file
     main_js --|> Leaflet
-    main_js --> routes : "Sends Elevate Request"  %% JS sends requests to Flask
+    main_js --> routes  %% JS sends requests to Flask
     HeatLayer_js --|> Leaflet
     simpleheat_js --|> HeatLayer_js
     leaflet_awesome_markers_js --|> Leaflet
