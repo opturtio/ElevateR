@@ -7,3 +7,5 @@ MarkupSafe==2.1.5
 python-dotenv==1.0.1
 typing_extensions==4.12.2
 Werkzeug==3.0.4
+requests==2.31.0
+Flask-CORS==3.0.10
