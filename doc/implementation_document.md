@@ -145,6 +145,7 @@ ElevateR/
 - **Show/Hide Markers**: Add an option to toggle the visibility of station markers based on different vehicle types or zoom levels.
 - **Route Preferences**: Include options to prefer certain types of transportation modes, such as fastest routes, shortest routes, or routes with fewer transfers.
 - **Theme Customization**: Let users choose different themes (e.g., light mode, dark mode) for the overall map display and UI.
+- **Dynamic Heatmap Expansion**: Allow users to download initial data and continuously request additional information in the background, progressively expanding the heatmap by increasing the radius. This would result in a larger heatmap that updates dynamically over time.
 
 ## Class Diagram
 ```mermaid
