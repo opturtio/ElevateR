@@ -38,7 +38,7 @@ ElevateR/
 │   ├── static/
 │   │   ├── js/
 │   │   │   ├── main.js                         # Main logic for map rendering and interactions
-│   │   │   ├── HeatLayer.js                    # Customized Leaflet heatmap layer
+│   │   │   ├── HeatLayer.js                    # Customized Leaflet heatmap layer library
 │   │   │   ├── leaflet.awesome-markers.js      # Marker customization plugin
 │   │   │   └── simpleheat.js                   # Customized Heatmap library for rendering
 │   │   ├── styles/
