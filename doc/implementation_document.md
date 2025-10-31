@@ -1,11 +1,5 @@
 # ElevateR Application Documentation
 
-## Overview
-
-**ElevateR** is a web application that visualizes public transportation stations in Helsinki and provides users with the ability to interact with a map, select a station, and "elevate" it to display travel times from the selected station to nearby stations using a heatmap. It integrates with the Helsinki Region Transport (HSL) API to fetch data related to stations and itineraries.
-
-The application has both a backend, written in Python using Flask, and a frontend using HTML, CSS, and JavaScript with Leaflet for map rendering and data visualization.
-
 ## Features
 
 1. **Map Visualization**:
