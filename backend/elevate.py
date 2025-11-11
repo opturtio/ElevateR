@@ -8,7 +8,7 @@ import math
 load_dotenv()
 
 # Define the URL for the HSL (Helsinki Region Transport) API
-HSL_API_URL = 'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql'
+HSL_API_URL = 'https://api.digitransit.fi/routing/v2/hsl/gtfs/v1'
 
 # Retrieve the API key from the environment variables loaded from the .env file
 HSL_API_KEY = os.getenv('HSL_API_KEY')  # Ensure the API key is in the .env file
