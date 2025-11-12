@@ -173,91 +173,64 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Event listener for the "Elevate" button
-    document.getElementById('elevateButton').addEventListener('click', function() {
-        if (selectedLat && selectedLon) {
-            // If there's a previously elevated marker and it's different from the currently selected marker,
-            // reset its color to the original marker color (but keep its icon)
-            if (lastElevatedMarker && lastElevatedMarker !== selectedMarker) {
-                resetMarkerColor(lastElevatedMarker, lastElevatedMarker.vehicleType);
+    document.getElementById('elevateButton').addEventListener('click', async function() {
+        if (selectedLat == null || selectedLon == null) {
+            alert('Please select a station on the map.');
+            return;
+        }
+
+        const btn = this;
+        btn.disabled = true;
+        const oldText = btn.textContent;
+        btn.textContent = 'Elevating...';
+
+        try {
+            const res = await fetch('/elevate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lat: Number(selectedLat), lon: Number(selectedLon) })
+            });
+
+            if (!res.ok) {
+                let msg = `HTTP ${res.status}`;
+                try {
+                    const err = await res.json();
+                    if (err && err.error) msg += `: ${err.error}`;
+                } catch {}
+                throw new Error(msg);
             }
 
-            // Change the currently selected marker color to black (while keeping its icon)
-            const vehicleIcons = {
-                0: 'fa-subway',     
-                1: 'fa-subway',     
-                109: 'fa-train',    
-                3: 'fa-bus',        
-                4: 'fa-ship',       
-            };
+            const data = await res.json();
 
-            selectedMarker.setIcon(L.AwesomeMarkers.icon({
-                icon: vehicleIcons[selectedMarker.vehicleType],
-                markerColor: 'black',
-                prefix: 'fa'
-            }));
+            const times = data.map(s => s.travel_time).filter(t => t != null);
+            if (!times.length) return;
 
-            // Store the currently elevated marker
-            lastElevatedMarker = selectedMarker;
-            
-            // Send a POST request to trigger the elevation process with the selected station's lat/lon
-            fetch('/elevate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    lat: selectedLat,
-                    lon: selectedLon
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Failed to trigger elevation process');
-                }
-            })
-            .then(data => {
-                alert('Elevation process triggered successfully!');
+            const maxTravelTime = Math.max(...times);
+            const minTravelTime = Math.min(...times);
 
-                const maxTravelTime = Math.max(...data.map(station => station.travel_time));
-                const minTravelTime = Math.min(...data.map(station => station.travel_time));
+            if (heatmapLayer) map.removeLayer(heatmapLayer);
 
-                // Remove existing heatmap layer if it exists
-                if (heatmapLayer) {
-                    map.removeLayer(heatmapLayer);
-                }
-
-                // Step 1: Prepare heatmap data using the station data returned from the backend
-                const heatmapData = data.map(station => {
-                    let travelTimeNormalized = (station.travel_time - minTravelTime) / (maxTravelTime - minTravelTime);
-                    travelTimeNormalized = Math.min(Math.max(travelTimeNormalized, 0), 1);
-                    return [station.lat, station.lon, travelTimeNormalized];
+            const heatmapData = data
+                .filter(s => s.travel_time != null)
+                .map(s => {
+                    let t = (s.travel_time - minTravelTime) / Math.max(1, (maxTravelTime - minTravelTime));
+                    t = Math.min(Math.max(t, 0), 1);
+                    return [s.lat, s.lon, t];
                 });
-                console.log("Heatmap Data:", heatmapData);
 
-                // Step 2: Create and add the heatmap layer to the map
-                heatmapLayer = L.heatLayer(heatmapData, {
-                    radius: 15,
-                    blur: 2,         
-                    opacity: 1,
-                    maxZoom: 0,        
-                    gradient: {         
-                        0.0: 'lightgreen',    
-                        0.25: 'green',
-                        0.5: 'yellow', 
-                        0.75: 'orange',     
-                        1.0: 'red'   
-                    }
-                }).addTo(map);
-            })
-            .catch(error => {
-                console.error('Error during elevation process:', error);
-                alert('Error during elevation process.');
-            });
-        } else {
-            alert('Please select a station on the map.');
-            console.warn("No station selected on the map.");
+            heatmapLayer = L.heatLayer(heatmapData, {
+                radius: 15,
+                blur: 2,
+                opacity: 1,
+                maxZoom: 0,
+                gradient: { 0.0: 'lightgreen', 0.25: 'green', 0.5: 'yellow', 0.75: 'orange', 1.0: 'red' }
+            }).addTo(map);
+        } catch (err) {
+            console.error('Error during elevation process:', err);
+            alert(`Elevation failed: ${err.message}`);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = oldText;
         }
     });
 });

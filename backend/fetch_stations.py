@@ -22,6 +22,9 @@ def fetch_helsinki_stations():
     Raises:
         Exception: If the API request fails or returns a non-200 HTTP status code.
     """
+    if not HSL_API_KEY:
+      raise RuntimeError("Missing HSL_API_KEY in environment")
+
     
     # GraphQL query to fetch stops within the bounding box of Helsinki
     query = """
@@ -31,11 +34,19 @@ def fetch_helsinki_stations():
         name
         lat
         lon
-        vehicleType
+        vehicleMode
       }
     }
     """
-    
+
+    vehicle_modes = [
+      'TRAM',
+      'SUBWAY',
+      'RAIL',
+      'BUS',
+      'FERRY'
+    ]
+
     # Set the request headers, including the required API key for authentication
     headers = {
         'Content-Type': 'application/json',
@@ -43,14 +54,36 @@ def fetch_helsinki_stations():
     }
 
     # Send a POST request to the HSL API with the GraphQL query
-    response = requests.post(HSL_API_URL, json={'query': query}, headers=headers)
+    res = requests.post(HSL_API_URL, json={'query': query}, headers=headers, timeout=30)
+    res.raise_for_status()
+    payload = res.json()
+    if 'errors' in payload:
+        raise RuntimeError(str(payload['errors']))
 
-    if response.status_code == 200:
-        data = response.json()
-        valid_stations = [station for station in data['data']['stopsByBbox'] if station['vehicleType'] in [0, 1, 109, 3, 4]]
-        return valid_stations
-    else:
-        raise Exception(f"Failed to fetch stations: {response.status_code}, {response.text}")
+    stops = payload.get('data', {}).get('stopsByBbox', []) or []
+
+    # Map enum to your numeric vehicleType
+    mode_to_type = {
+        'TRAM': 0,
+        'SUBWAY': 1,
+        'RAIL': 109,
+        'BUS': 3,
+        'FERRY': 4
+    }
+
+    valid_stations = [
+        {
+            'gtfsId': s.get('gtfsId'),
+            'name': s.get('name'),
+            'lat': s.get('lat'),
+            'lon': s.get('lon'),
+            'vehicleMode': s.get('vehicleMode'),
+            'vehicleType': mode_to_type.get(s.get('vehicleMode'))
+        }
+        for s in stops
+        if s.get('vehicleMode') in mode_to_type
+    ]
+    return valid_stations
 
 # Fetch Helsinki stations and handle any potential exceptions
 try:
