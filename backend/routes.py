@@ -14,9 +14,9 @@ def trigger_elevate():
         lat = data.get('lat')
         lon = data.get('lon')
         limit = int(data.get('limit', 120))
-        limit = max(1, min(limit, 80))
+        limit = max(1, min(limit, 100))
 
-        nearest_stations = elevate(lat, lon, stations, limit=limit, batch_size=8, max_workers=4)
+        nearest_stations = elevate(lat, lon, stations, limit=limit, batch_size=6, max_workers=10)
         return jsonify(nearest_stations), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
