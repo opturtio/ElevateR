@@ -224,6 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 opacity: 1,
                 maxZoom: 0,
                 gradient: { 0.0: 'lightgreen', 0.25: 'green', 0.5: 'yellow', 0.75: 'orange', 1.0: 'red' }
+                // gradient: { 0.0: 'lightblue', 0.25: 'blue', 0.5: 'yellow', 0.75: 'orange', 1.0: 'red' }
             }).addTo(map);
         } catch (err) {
             console.error('Error during elevation process:', err);
